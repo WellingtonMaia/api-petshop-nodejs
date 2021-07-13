@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
-const instance = require('../database/index');
+const instance = require('../../database/index');
+const defaultOptions = require('../defaultOptions');
 
 const columns = {
   company: {
@@ -16,11 +17,6 @@ const columns = {
   }
 }
 
-const options = {
- freezeTableName: true,
- tableName: 'suppliers',
- timestamps: true,
- version: 'version'
-}
+const options = defaultOptions('suppliers');
 
 module.exports = instance.define('supplier', columns, options);

@@ -1,14 +1,29 @@
 const router = require('express').Router();
 const repository = require('./../../repositories/supplier-repository');
-const Supplier = require('./../../models/supplier');
+const Supplier = require('./../../models/supplier/supplier');
 const SupplierSerializer = require('../../api/serializer').SupplierSerializer;
 
+router.options('/', (req, res, next) => {
+  res.set('Access-Control-Allow-Methods', 'GET, POST');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.status(204);
+  res.end();
+});
+
+router.options('/:id', (req, res, next) => {
+  res.set('Access-Control-Allow-Methods', 'GET, PUT, DELETE');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.status(204);
+  res.end();
+});
+
 router.get('/', async (req, res) => {
+  const result = await repository.list()
 
   const serialize = new SupplierSerializer(
-    res.getHeader('Content-Type')
+    res.getHeader('Content-Type'),
+    ['company', 'category']
   );
-  const result = await repository.list()
 
   res.status(200).send(
     serialize.serializer(result)
@@ -19,14 +34,15 @@ router.post('/', async (req, res, next) => {
   try {
     const data = req.body;
     const supplier = new Supplier(data);
-    await supplier.add();
+    await supplier.create();
     
     const serialize = new SupplierSerializer(
       res.getHeader('Content-Type')
     );
 
     res.status(201).send(
-      serialize.serializer(supplier)
+      serialize.serializer(supplier),
+      ['company', 'category']
     ); 
   
   } catch (error) {
@@ -41,7 +57,7 @@ router.get('/:id', async (req, res, next) => {
 
     const serialize = new SupplierSerializer(
       res.getHeader('Content-Type'),
-      ['email', 'createdAt', 'updatedAt', 'version']
+      ['email', 'createdAt', 'updatedAt', 'version', 'company', 'category']
     ); 
     
     res.status(200).send(
@@ -79,5 +95,21 @@ router.delete('/:id', async (req, res, next) => {
     next(error);
   }
 });
+
+const productsRouter = require('./../product/index');
+//middleware to check if supplier exist
+const checkSupplier = async (req, res, next) => {
+  try {
+    const id = req.params.supplierId;
+    const supplier = new Supplier({id: id});
+    await supplier.findById();
+    req.supplier = supplier;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.use('/:supplierId/products', checkSupplier, productsRouter);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const NotFound = require('../errors/not-found');
-const model = require('../models/supplier-sequelize');
+const model = require('../models/supplier/supplier-sequelize');
 
 const ATTRIBUTES = ['id', 'company', 'category', 'createdAt'];
 
@@ -21,7 +21,7 @@ module.exports = {
     });
 
     if (!found) {
-      throw new NotFound()
+      throw new NotFound('Supplier');
     }
     
     return found;

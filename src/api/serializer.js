@@ -64,8 +64,8 @@ class SupplierSerializer  extends Serializer {
     this.contentType = contentType
     this.publicFields = [
       'id',
-      'company',
-      'category'
+      // 'company',
+      // 'category'
     ].concat(extrasFields || []);
     this.singularTag = 'supplier';
     this.pluralTag = 'suppliers'
@@ -85,9 +85,25 @@ class ErrorSerializer  extends Serializer {
   }
 }
 
+class ProductSerializer extends Serializer {
+  constructor(contentType, extrasFields) {
+    super();
+    this.contentType = contentType
+    this.publicFields = [
+      'id',
+      'title',
+      'price',
+      'stock'
+    ].concat(extrasFields || []);
+    this.singularTag = 'product';
+    this.pluralTag = 'products'
+  }
+}
+
 module.exports = {
   Serializer,
   SupplierSerializer,
+  ProductSerializer,
   ErrorSerializer,
   formatAccepted: [
     'application/json',

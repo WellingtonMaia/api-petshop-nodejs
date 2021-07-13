@@ -1,5 +1,5 @@
-const FieldInvalid = require('../errors/field-invalid');
-const repository = require('./../repositories/supplier-repository');
+const FieldInvalid = require('../../errors/field-invalid');
+const repository = require('../../repositories/supplier-repository');
 
 class Supplier {
   constructor({
@@ -15,9 +15,8 @@ class Supplier {
     this.version = version;
   }
 
-  async add() {
+  async create() {
     const dataToUpdate = await this.returnDataValid()
-    console.log(dataToUpdate);
     const result = await repository.insert(dataToUpdate);
 
     this.id = result.id;
@@ -28,6 +27,7 @@ class Supplier {
 
   async findById() {
     const find = await repository.findById(this.id);
+    this.id = find.id;
     this.company = find.company; 
     this.email = find.email; 
     this.category = find.category; 
@@ -47,7 +47,7 @@ class Supplier {
   async delete() {
     await repository.findById(this.id);
 
-    return await repository.delete(this.id);
+    await repository.delete(this.id);
   }
 
   returnDataValid() {

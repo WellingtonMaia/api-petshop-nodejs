@@ -7,10 +7,21 @@ const FieldInvalid = require('../errors/field-invalid');
 const TypeValueInvalid = require('../errors/type-value-invalid');
 const formatAccepted = require('./serializer').formatAccepted;
 const ErrorSerializer = require('./serializer').ErrorSerializer;
+const FieldsNotFilled = require('../errors/fields-not-filled');
 
 app.use(bodyParser.json());
 
-//middelware
+//middleware
+app.use((req, res, next) => {
+  res.set('X-Powered-By', 'Petshop Gatito');
+  
+  //CORS
+  res.set('Access-Control-Allow-Origin', '*')
+  
+  next();
+});
+
+//middleware
 app.use((request, response, next) => {
   let requestFormat = request.header('Accept');
   
@@ -28,11 +39,14 @@ app.use((request, response, next) => {
   next();
 });
 
-const router = require('./../routes/supplier/index');
+//routes
+const supplierRouter = require('./../routes/supplier/index');
+app.use('/api/suppliers', supplierRouter);
 
-app.use('/api/suppliers', router);
+const supplierRouterV2 = require('./../routes/supplier/supplier.v2');
+app.use('/api/v2/suppliers', supplierRouterV2);
 
-//middelware
+//middleware
 app.use((error, request, response, next) => {
   let statusCode = 500;
   
@@ -40,7 +54,7 @@ app.use((error, request, response, next) => {
     statusCode = 404;
   }
 
-  if (error instanceof FieldInvalid) {
+  if (error instanceof FieldInvalid || error instanceof FieldsNotFilled) {
     statusCode = 400;
   }
 

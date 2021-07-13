@@ -1,6 +1,12 @@
-const TableModel = require('../models/supplier');
+const models = [
+  require('../models/supplier/supplier-sequelize'),
+  require('../models/product/product-sequelize')
+]
 
-TableModel
-  .sync()
-  .then(() => console.log('table created with success'))
-  .catch(console.log);
+const createTables = async () => {
+  models.forEach( async (model, index) => {
+   await model.sync();
+  });
+}
+
+createTables();
