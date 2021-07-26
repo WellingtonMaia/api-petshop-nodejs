@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/api/index.js"
+    "start": "nodemon src/api/index.js",
+    "lint": "./node_modules/.bin/eslint .",
+    "lint:fix": "./node_modules/.bin/eslint . --fix",
+    "test": "./node_modules/.bin/jest"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +22,12 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.0.6",
     "nodemon": "^2.0.11"
   }
 }

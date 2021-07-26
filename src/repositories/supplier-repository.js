@@ -1,41 +1,41 @@
-const NotFound = require('../errors/not-found');
-const model = require('../models/supplier/supplier-sequelize');
+const NotFound = require('../errors/not-found')
+const model = require('../models/supplier/supplier-sequelize')
 
-const ATTRIBUTES = ['id', 'company', 'category', 'createdAt'];
+// const ATTRIBUTES = ['id', 'company', 'category', 'createdAt']
 
 module.exports = {
-  list() {
-    return model.findAll({ raw: true});
+  list () {
+    return model.findAll({ raw: true })
   },
 
-  insert(supplier) {
-    return model.create(supplier);
+  insert (supplier) {
+    return model.create(supplier)
   },
 
-  async findById(id) {
+  async findById (id) {
     // const found = model.findByPk(id);
     const found = await model.findOne({
       where: {
         id: id
       }
-    });
+    })
 
     if (!found) {
-      throw new NotFound('Supplier');
+      throw new NotFound('Supplier')
     }
-    
-    return found;
+
+    return found
   },
 
-  async update(id, supplier) {
+  async update (id, supplier) {
     return await model.update(supplier, {
       where: { id: id }
-    }); 
+    })
   },
 
-  async delete(id) {
+  async delete (id) {
     return await model.destroy({
       where: { id: id }
-    });
+    })
   }
 }

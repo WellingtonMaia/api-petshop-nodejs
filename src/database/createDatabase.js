@@ -4,9 +4,9 @@ const models = [
 ]
 
 const createTables = async () => {
-  models.forEach( async (model, index) => {
-   await model.sync();
-  });
+  models.forEach(async (model, index) => {
+    await model.sync()
+  })
 }
 
-createTables();
+createTables()

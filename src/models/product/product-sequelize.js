@@ -1,16 +1,15 @@
-const Sequelize = require('sequelize');
-const instance = require('../../database/index');
-const defaultOptions = require('../defaultOptions');
-
+const Sequelize = require('sequelize')
+const instance = require('../../database/index')
+const defaultOptions = require('../defaultOptions')
 
 const columns = {
   title: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
   price: {
     type: Sequelize.DOUBLE,
-    allowNull: false,
+    allowNull: false
   },
   stock: {
     type: Sequelize.INTEGER,
@@ -25,8 +24,8 @@ const columns = {
       key: 'id'
     }
   }
-};
+}
 
-const options = defaultOptions('products');
+const options = defaultOptions('products')
 
-module.exports = instance.define('product', columns, options);
+module.exports = instance.define('product', columns, options)

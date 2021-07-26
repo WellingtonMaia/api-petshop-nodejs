@@ -1,101 +1,103 @@
-const TypeValueInvalid = require("../errors/type-value-invalid");
-const jsontoxml = require('jsontoxml');
+const TypeValueInvalid = require('../errors/type-value-invalid')
+const jsontoxml = require('jsontoxml')
 
 class Serializer {
-  json(data) {
-    return JSON.stringify(data);
+  json (data) {
+    return JSON.stringify(data)
   }
 
-  xml(data) {
-    let tag = this.singularTag;
+  xml (data) {
+    let tag = this.singularTag
 
     if (Array.isArray(data)) {
-      tag = this.pluralTag;
+      tag = this.pluralTag
       data = data.map((item) => {
         return {
           [this.singularTag]: item
         }
-      });
+      })
     }
 
-    return jsontoxml({ [tag]: data });
+    return jsontoxml({ [tag]: data })
   }
 
-  serializer(data) {
-    data = this.filter(data);
+  serializer (data) {
+    data = this.filter(data)
 
     if (this.contentType === 'application/json') {
-      return this.json(data);
+      return this.json(data)
     }
 
-    if(this.contentType === 'application/xml') {
-      return this.xml(data);
+    if (this.contentType === 'application/xml') {
+      return this.xml(data)
     }
 
-    throw new TypeValueInvalid(this.contentType);
+    throw new TypeValueInvalid(this.contentType)
   }
 
-  filterObject(data) {
-    const newObject = {};
+  filterObject (data) {
+    const newObject = {}
 
     this.publicFields.forEach(field => {
-      if (data.hasOwnProperty(field)) {
-        newObject[field] = data[field];
+      // data.hasOwnProperty(field)
+      // Object.prototype.hasOwnProperty.call(data, field)
+      if (Reflect.has(data, field)) {
+        newObject[field] = data[field]
       }
-    });
+    })
 
-    return newObject;
+    return newObject
   }
 
   filter (data) {
     if (Array.isArray(data)) {
       data = data.map(item => this.filterObject(item))
     } else {
-      data = this.filterObject(data);
+      data = this.filterObject(data)
     }
 
-    return data;
+    return data
   }
 }
 
-class SupplierSerializer  extends Serializer {
-  constructor(contentType, extrasFields) {
-    super();
+class SupplierSerializer extends Serializer {
+  constructor (contentType, extrasFields) {
+    super()
     this.contentType = contentType
     this.publicFields = [
-      'id',
+      'id'
       // 'company',
       // 'category'
-    ].concat(extrasFields || []);
-    this.singularTag = 'supplier';
+    ].concat(extrasFields || [])
+    this.singularTag = 'supplier'
     this.pluralTag = 'suppliers'
   }
 }
 
-class ErrorSerializer  extends Serializer {
-  constructor(contentType, extrasFields) {
-    super();
+class ErrorSerializer extends Serializer {
+  constructor (contentType, extrasFields) {
+    super()
     this.contentType = contentType
     this.publicFields = [
       'id',
-      'message',
-    ].concat(extrasFields || []);
-    this.singularTag = 'error';
-    this.pluralTag = 'errors';
+      'message'
+    ].concat(extrasFields || [])
+    this.singularTag = 'error'
+    this.pluralTag = 'errors'
   }
 }
 
 class ProductSerializer extends Serializer {
-  constructor(contentType, extrasFields) {
-    super();
+  constructor (contentType, extrasFields) {
+    super()
     this.contentType = contentType
     this.publicFields = [
       'id',
       'title',
       'price',
       'stock'
-    ].concat(extrasFields || []);
-    this.singularTag = 'product';
+    ].concat(extrasFields || [])
+    this.singularTag = 'product'
     this.pluralTag = 'products'
   }
 }
@@ -109,4 +111,4 @@ module.exports = {
     'application/json',
     'application/xml'
   ]
-};
+}
