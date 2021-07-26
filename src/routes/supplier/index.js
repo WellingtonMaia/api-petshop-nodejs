@@ -37,12 +37,12 @@ router.post('/', async (req, res, next) => {
     await supplier.create()
 
     const serialize = new SupplierSerializer(
-      res.getHeader('Content-Type')
+      res.getHeader('Content-Type'),
+      ['company', 'category']
     )
 
     res.status(201).send(
-      serialize.serializer(supplier),
-      ['company', 'category']
+      serialize.serializer(supplier)
     )
   } catch (error) {
     next(error)
